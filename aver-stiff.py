@@ -7,6 +7,7 @@
 		[0] 1st line -- Pile prefix name (e.g Pile)
 		[1] 2nd line -- Linearised stiffness matrix lis file (usually SPLICE_EQSTIFF.LIS)
 		[2] 3rd line -- Number of piles (integer) 
+		[3] 4th line -- Output file name (extension should be excluded)
 
 
 
@@ -55,7 +56,7 @@ def line_num(nameoflist, word, start, end):
 			linenumber.append(i)
 	return linenumber
 
-def pile_head_coord(input_list, no_of_pile):
+def pile_head_coord(input_list):
 	''' Function to extract pile head coordinate '''
 	
 	# Get line number where the coordinate start (list)
@@ -64,12 +65,18 @@ def pile_head_coord(input_list, no_of_pile):
 	#print(start_line)
 
 	coordinate = []
-	extract_status = False
+	extract_status = True
+
+	# for i, line in enumerate(input_list):
+	# 	if  start_line[0] + 4 < i <= start_line[0] + 4 + no_of_pile :
+	# 		coordinate.append(line.split())
 
 	for i, line in enumerate(input_list):
-		if  start_line[0] + 4 < i <= start_line[0] + 4 + no_of_pile :
-			coordinate.append(line.split())
-
+		if i > start_line[0] + 4 and extract_status :
+			if len(line.strip()) == 0 :
+				extract_status = False
+			else:
+				coordinate.append(line.split()) 
 
 	return coordinate
 
@@ -161,6 +168,7 @@ def write_output(avgmatrix, headcoord, out_name, pileprefix):
 
 			if write_status :
 				outfile.write(f'AvgStiffPile_{i+1} = SupportPoint(Point({xcoord}, {ycoord}, {zcoord}));' + '\n' )
+				outfile.write(f'AvgStiffPile_{i+1}.boundary = BoundaryStiffnessMatrix(Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0));' + '\n')
 				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,1 , {item[0,0]} );' + '\n')
 				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,2 , {item[0,1]} );' + '\n')
 				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,3 , {item[0,2]} );' + '\n')
@@ -261,10 +269,17 @@ print('\n')
 
 # Read single file to just extract the pile head coordinates
 single_raw_list = to_list(ctrlpar[1][:-4] + "_" + "1.LIS", False)
-pilecoord = pile_head_coord(single_raw_list, int(ctrlpar[2]))
+pilecoord = pile_head_coord(single_raw_list)
+
+#print(*pilecoord, sep='\n')
 
 #Writing output file
-write_output(avg_matrix, pilecoord, "Pile-stiffness-matrix", ctrlpar[0])
+output_filename = ctrlpar[3]
+if output_filename.strip() == "" :
+	print('Please put the output file name in the control file line 4, no output has been produced')
+else :
+	print('Writing output : ', output_filename + ".js")
+	write_output(avg_matrix, pilecoord, output_filename, ctrlpar[0])
 
 
 
