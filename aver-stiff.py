@@ -67,10 +67,6 @@ def pile_head_coord(input_list):
 	coordinate = []
 	extract_status = True
 
-	# for i, line in enumerate(input_list):
-	# 	if  start_line[0] + 4 < i <= start_line[0] + 4 + no_of_pile :
-	# 		coordinate.append(line.split())
-
 	for i, line in enumerate(input_list):
 		if i > start_line[0] + 4 and extract_status :
 			if len(line.strip()) == 0 :
@@ -115,14 +111,14 @@ def matrix_tofloat(input_list):
 	return converted_matrix
 
 
-def rearrange_matrix(martixname, rownum):
+def rearrange_matrix(matrixname, rownum):
 	''' Function to rearrange big matrix into nested matrix '''
 	
-	how_many_matrix = int(len(martixname)/rownum)
+	how_many_matrix = int(len(matrixname)/rownum)
 	arranged_matrix = []
 	for i in range(how_many_matrix):
 		#print(martixname[i*rownum:(i+1)*rownum])
-		arranged_matrix.append(martixname[i * rownum:(i + 1) * rownum])
+		arranged_matrix.append(matrixname[i * rownum:(i + 1) * rownum])
 	
 	return arranged_matrix
 
@@ -150,6 +146,28 @@ def average_pilewise (matrixname):
 		#print(f'This is the averaged {i}' , averaged_matrix)
 	return averaged_matrix
 
+def average_all (matrixname) :
+	''' function to average all pile stiffness matrix ''' 
+
+	sum_matrix = np.array([[0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+	 					   [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+						   [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+						   [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+						   [0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+						   [0.0, 0.0, 0.0, 0.0, 0.0, 0.0]])
+	count = 0
+	for i, item in enumerate(matrixname):
+		for each in item :
+			sum_matrix = sum_matrix + each
+			count = count + 1
+
+	print("count should be 128 :", count)
+	averaged_matrix = sum_matrix / count
+
+	return averaged_matrix
+
+
+
 def write_output(avgmatrix, headcoord, out_name, pileprefix):
 	''' Function to produce output '''
 
@@ -169,33 +187,82 @@ def write_output(avgmatrix, headcoord, out_name, pileprefix):
 			if write_status :
 				outfile.write(f'AvgStiffPile_{i+1} = SupportPoint(Point({xcoord}, {ycoord}, {zcoord}));' + '\n' )
 				outfile.write(f'AvgStiffPile_{i+1}.boundary = BoundaryStiffnessMatrix(Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0));' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,1 , {item[0,0]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,2 , {item[0,1]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,3 , {item[0,2]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,4 , {item[0,3]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,5 , {item[0,4]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,6 , {item[0,5]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,2 , {item[1,1]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,3 , {item[1,2]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,4 , {item[1,3]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,5 , {item[1,4]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,6 , {item[1,5]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,3 , {item[2,2]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,4 , {item[2,3]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,5 , {item[2,4]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,6 , {item[2,5]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,4 , {item[3,3]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,5 , {item[3,4]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,6 , {item[3,5]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(5 ,5 , {item[4,4]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(5 ,6 , {item[4,5]} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(6 ,6 , {item[5,5]} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,1 , {rounding_zero(item[0,0])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,2 , {rounding_zero(item[0,1])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,3 , {rounding_zero(item[0,2])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,4 , {rounding_zero(item[0,3])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,5 , {rounding_zero(item[0,4])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,6 , {rounding_zero(item[0,5])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,2 , {rounding_zero(item[1,1])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,3 , {rounding_zero(item[1,2])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,4 , {rounding_zero(item[1,3])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,5 , {rounding_zero(item[1,4])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,6 , {rounding_zero(item[1,5])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,3 , {rounding_zero(item[2,2])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,4 , {rounding_zero(item[2,3])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,5 , {rounding_zero(item[2,4])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,6 , {rounding_zero(item[2,5])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,4 , {rounding_zero(item[3,3])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,5 , {rounding_zero(item[3,4])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,6 , {rounding_zero(item[3,5])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(5 ,5 , {rounding_zero(item[4,4])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(5 ,6 , {rounding_zero(item[4,5])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(6 ,6 , {rounding_zero(item[5,5])} );' + '\n')
 				outfile.write('\n')
 
 			else:
 				outfile.write(f'Pile_{i+1} not found ERROR' + '\n' )
 
 	return 
+
+def write_output_avgall(avgmatrix, headcoord, out_name, pileprefix, numberofpile) :
+	''' Function to write output file for average stiffness '''
+
+	with open(out_name + "_avgall.js", 'w') as outfile :
+		outfile.write('// Averaged linearised stiffness matrix (averaged for all piles)' + '\n')
+		outfile.write('// Note : units are not written, should be consistent with FEM unit ' + '\n')
+		outfile.write('\n')		
+
+		for i in range(1, numberofpile + 1, 1) :
+			for piledata in headcoord :
+				if piledata[1] == pileprefix + str(i):
+					xcoord = piledata[2]
+					ycoord = piledata[3]
+					zcoord = piledata[4]
+
+					outfile.write(f'AvgStiffPile_{i+1} = SupportPoint(Point({xcoord}, {ycoord}, {zcoord}));' + '\n' )
+					outfile.write(f'AvgStiffPile_{i+1}.boundary = BoundaryStiffnessMatrix(Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0));' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,1 , {rounding_zero(avgmatrix[0,0])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,2 , {rounding_zero(avgmatrix[0,1])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,3 , {rounding_zero(avgmatrix[0,2])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,4 , {rounding_zero(avgmatrix[0,3])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,5 , {rounding_zero(avgmatrix[0,4])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,6 , {rounding_zero(avgmatrix[0,5])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,2 , {rounding_zero(avgmatrix[1,1])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,3 , {rounding_zero(avgmatrix[1,2])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,4 , {rounding_zero(avgmatrix[1,3])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,5 , {rounding_zero(avgmatrix[1,4])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,6 , {rounding_zero(avgmatrix[1,5])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,3 , {rounding_zero(avgmatrix[2,2])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,4 , {rounding_zero(avgmatrix[2,3])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,5 , {rounding_zero(avgmatrix[2,4])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,6 , {rounding_zero(avgmatrix[2,5])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,4 , {rounding_zero(avgmatrix[3,3])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,5 , {rounding_zero(avgmatrix[3,4])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,6 , {rounding_zero(avgmatrix[3,5])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(5 ,5 , {rounding_zero(avgmatrix[4,4])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(5 ,6 , {rounding_zero(avgmatrix[4,5])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(6 ,6 , {rounding_zero(avgmatrix[5,5])} );' + '\n')
+					outfile.write('\n')
+
+
+def rounding_zero (float_number) :
+	if abs(float_number) < 0.0001 :
+		writenumber = 0.00
+	else :
+		writenumber = round(float_number,2)
+
+	return writenumber
 
 
 
@@ -242,6 +309,10 @@ for i in range(1, int(ctrlpar[2]) + 1, 1) :
 # Perform stiffness averaging - pilewise
 avg_matrix = average_pilewise(combined_matrix)
 
+# Perform global averaging - total div by number of matrix
+avgall_matrix = average_all(combined_matrix)
+
+
 ''' CHECK OUTPUT ---------- '''
 
 #print("Length of the combined matrix (should be 16) :", len(combined_matrix))
@@ -278,10 +349,13 @@ output_filename = ctrlpar[3]
 if output_filename.strip() == "" :
 	print('Please put the output file name in the control file line 4, no output has been produced')
 else :
-	print('Writing output : ', output_filename + ".js")
+	print('Writing output pile-wise average : ', output_filename + ".js")
 	write_output(avg_matrix, pilecoord, output_filename, ctrlpar[0])
 
+	print('Writing output global average : ', output_filename + "_avgall.js" )
+	write_output_avgall(avgall_matrix, pilecoord, output_filename, ctrlpar[0], int(ctrlpar[2]))
 
+	print('RUN COMPLETE')
 
 
 
