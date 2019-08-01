@@ -9,7 +9,9 @@
 		[2] 3rd line -- Number of piles (integer) 
 		[3] 4th line -- Output file name (extension should be excluded)
 
-
+	Adding stat feature :
+		1. Showing which pile give the maximum value for each component
+		2. Showing how far each component from the overal average (value/average * 100)
 
 
 '''
@@ -257,6 +259,7 @@ def write_output_avgall(avgmatrix, headcoord, out_name, pileprefix, numberofpile
 
 
 def rounding_zero (float_number) :
+	''' Round number and make it zero it it's soo small '''
 	if abs(float_number) < 0.0001 :
 		writenumber = 0.00
 	else :
@@ -264,8 +267,104 @@ def rounding_zero (float_number) :
 
 	return writenumber
 
+def find_maxmin (matrixname):
+	''' Find which pile that give maximum value for each component'''
+	maxvalue11, minvalue11 = 0.0, 1.0E10
+	maxvalue22, minvalue22 = 0.0, 1.0E10
+	maxvalue33, minvalue33 = 0.0, 1.0E10
+	maxvalue44, minvalue44 = 0.0, 1.0E10
+	maxvalue55, minvalue55 = 0.0, 1.0E10
+	maxvalue66, minvalue66 = 0.0, 1.0E10
+	for i, pile in enumerate(matrixname) :
+		for j, loadcase in enumerate(pile) :
+			if abs(maxvalue11) < abs(loadcase[0,0]) :
+				maxvalue11 = loadcase[0,0]
+				maxkey11 = [i, j]
+
+			if abs(maxvalue22) < abs(loadcase[1,1]) :
+				maxvalue22 = loadcase[1,1]
+				maxkey22 = [i, j] 
+
+			if abs(maxvalue33) < abs(loadcase[2,2]) :
+				maxvalue33 = loadcase[2,2]
+				maxkey33= [i, j]
+
+			if abs(maxvalue44) < abs(loadcase[3,3]) :
+				maxvalue44 = loadcase[3,3]
+				maxkey44= [i, j]
+
+			if abs(maxvalue55) < abs(loadcase[4,4]) :
+				maxvalue55 = loadcase[4,4]
+				maxkey55= [i, j]
+
+			if abs(maxvalue66) < abs(loadcase[5,5]) :
+				maxvalue66 = loadcase[5,5]
+				maxkey66= [i, j]
+
+			''' min '''
+
+			if abs(minvalue11) > abs(loadcase[0,0]) :
+				minvalue11 = loadcase[0,0]
+				minkey11 = [i, j]
+
+			if abs(minvalue22) > abs(loadcase[1,1]) :
+				minvalue22 = loadcase[1,1]
+				minkey22 = [i, j] 
+
+			if abs(minvalue33) > abs(loadcase[2,2]) :
+				minvalue33 = loadcase[2,2]
+				minkey33= [i, j]
+
+			if abs(minvalue44) > abs(loadcase[3,3]) :
+				minvalue44 = loadcase[3,3]
+				minkey44= [i, j]
+
+			if abs(minvalue55) > abs(loadcase[4,4]) :
+				minvalue55 = loadcase[4,4]
+				minkey55= [i, j]
+
+			if abs(minvalue66) > abs(loadcase[5,5]) :
+				minvalue66 = loadcase[5,5]
+				minkey66= [i, j]
 
 
+			#print(str(i) + " " + str(j))
+
+	maxmatrix = [ [[maxvalue11, maxkey11], 
+				   [maxvalue22, maxkey22], 
+				   [maxvalue33, maxkey33], 
+				   [maxvalue44, maxkey44], 
+				   [maxvalue55, maxkey55], 
+				   [maxvalue66, maxkey66], ],
+				  [[minvalue11, minkey11], 
+				   [minvalue22, minkey22], 
+				   [minvalue33, minkey33], 
+				   [minvalue44, minkey44], 
+				   [minvalue55, minkey55], 
+				   [minvalue66, minkey66], ]
+				   ]
+
+	return maxmatrix 
+
+def write_lis_file(m) :
+	with open('pileaver.lis', 'w') as outfile :
+		outfile.write('Printing maximum and minimum value' + '\n')
+		outfile.write('Maximum value (only diagonal)' + '\n')
+		outfile.write(f'{m[0][0][0]} - P{m[0][0][1][0] + 1}LC{m[0][0][1][1] + 1}' + '\n')
+		outfile.write(f'              {m[0][1][0]} - P{m[0][1][1][0] + 1}LC{m[0][1][1][1] + 1} ' + '\n')
+		outfile.write(f'                            {m[0][2][0]} - P{m[0][2][1][0] + 1}LC{m[0][2][1][1] + 1}' + '\n')
+		outfile.write(f'                                            {m[0][3][0]} - P{m[0][3][1][0] + 1}LC{m[0][3][1][1] + 1}' + '\n')
+		outfile.write(f'                                                           {m[0][4][0]} - P{m[0][4][1][0] + 1}LC{m[0][4][1][1] + 1}' + '\n')
+		outfile.write(f'                                                                          {m[0][5][0]} - P{m[0][5][1][0] + 1}LC{m[0][5][1][1] + 1}' + '\n')
+		outfile.write('\n')	 
+		outfile.write('Minimum value (only diagonal)' + '\n')
+		outfile.write(f'{m[1][0][0]} - P{m[1][0][1][0] + 1}LC{m[1][0][1][1] + 1}' + '\n')
+		outfile.write(f'              {m[1][1][0]} - P{m[1][1][1][0] + 1}LC{m[1][1][1][1] + 1} ' + '\n')
+		outfile.write(f'                            {m[1][2][0]} - P{m[1][2][1][0] + 1}LC{m[1][2][1][1] + 1}' + '\n')
+		outfile.write(f'                                            {m[1][3][0]} - P{m[1][3][1][0] + 1}LC{m[1][3][1][1] + 1}' + '\n')
+		outfile.write(f'                                                           {m[1][4][0]} - P{m[1][4][1][0] + 1}LC{m[1][4][1][1] + 1}' + '\n')
+		outfile.write(f'                                                                          {m[1][5][0]} - P{m[1][5][1][0] + 1}LC{m[1][5][1][1] + 1}' + '\n')
+		outfile.write('\n')	 
 ''' --- execute program ---  '''
 
 #Check if control file is given and valid
@@ -312,6 +411,8 @@ avg_matrix = average_pilewise(combined_matrix)
 # Perform global averaging - total div by number of matrix
 avgall_matrix = average_all(combined_matrix)
 
+# Extract maximum and minimum of leading diagonal value
+maxmin_matrix = find_maxmin(combined_matrix)
 
 ''' CHECK OUTPUT ---------- '''
 
@@ -355,15 +456,15 @@ else :
 	print('Writing output global average : ', output_filename + "_avgall.js" )
 	write_output_avgall(avgall_matrix, pilecoord, output_filename, ctrlpar[0], int(ctrlpar[2]))
 
+	print('Writing summary lis file : pileaverage.lis' )
+	write_lis_file(maxmin_matrix)
+
 	print('RUN COMPLETE')
 
 
 
-
-
-
-
-
+#New feature
+#print(*find_maxmin(combined_matrix), sep='\n')
 
 
 
