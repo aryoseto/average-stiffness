@@ -7,7 +7,8 @@
 		[0] 1st line -- Pile prefix name (e.g Pile)
 		[1] 2nd line -- Linearised stiffness matrix lis file (usually SPLICE_EQSTIFF.LIS)
 		[2] 3rd line -- Number of piles (integer) 
-		[3] 4th line -- Output file name (extension should be excluded)
+		[3] 4th line -- pile numbering start (integer)
+		[4] 5th line -- Output file name (extension should be excluded)
 
 	Adding stat feature :
 		1. Showing which pile give the maximum value for each component
@@ -180,36 +181,36 @@ def write_output(avgmatrix, headcoord, out_name, pileprefix):
 		for i, item in enumerate(avgmatrix):
 			write_status = False
 			for piledata in headcoord:
-				if piledata[1] == pileprefix + str(i+1):
+				if piledata[1] == pileprefix + str(i + int(ctrlpar[3]) ):
 					write_status = True
 					xcoord = piledata[2]
 					ycoord = piledata[3]
 					zcoord = piledata[4]
 
 			if write_status :
-				outfile.write(f'AvgStiffPile_{i+1} = SupportPoint(Point({xcoord}, {ycoord}, {zcoord}));' + '\n' )
-				outfile.write(f'AvgStiffPile_{i+1}.boundary = BoundaryStiffnessMatrix(Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0));' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,1 , {rounding_zero(item[0,0])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,2 , {rounding_zero(item[0,1])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,3 , {rounding_zero(item[0,2])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,4 , {rounding_zero(item[0,3])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,5 , {rounding_zero(item[0,4])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,6 , {rounding_zero(item[0,5])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,2 , {rounding_zero(item[1,1])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,3 , {rounding_zero(item[1,2])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,4 , {rounding_zero(item[1,3])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,5 , {rounding_zero(item[1,4])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,6 , {rounding_zero(item[1,5])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,3 , {rounding_zero(item[2,2])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,4 , {rounding_zero(item[2,3])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,5 , {rounding_zero(item[2,4])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,6 , {rounding_zero(item[2,5])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,4 , {rounding_zero(item[3,3])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,5 , {rounding_zero(item[3,4])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,6 , {rounding_zero(item[3,5])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(5 ,5 , {rounding_zero(item[4,4])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(5 ,6 , {rounding_zero(item[4,5])} );' + '\n')
-				outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(6 ,6 , {rounding_zero(item[5,5])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) } = SupportPoint(Point({xcoord}, {ycoord}, {zcoord}));' + '\n' )
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary = BoundaryStiffnessMatrix(Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0));' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,1 , {rounding_zero(item[0,0])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,2 , {rounding_zero(item[0,1])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,3 , {rounding_zero(item[0,2])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,4 , {rounding_zero(item[0,3])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,5 , {rounding_zero(item[0,4])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,6 , {rounding_zero(item[0,5])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(2 ,2 , {rounding_zero(item[1,1])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(2 ,3 , {rounding_zero(item[1,2])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(2 ,4 , {rounding_zero(item[1,3])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(2 ,5 , {rounding_zero(item[1,4])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(2 ,6 , {rounding_zero(item[1,5])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(3 ,3 , {rounding_zero(item[2,2])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(3 ,4 , {rounding_zero(item[2,3])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(3 ,5 , {rounding_zero(item[2,4])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(3 ,6 , {rounding_zero(item[2,5])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(4 ,4 , {rounding_zero(item[3,3])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(4 ,5 , {rounding_zero(item[3,4])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(4 ,6 , {rounding_zero(item[3,5])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(5 ,5 , {rounding_zero(item[4,4])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(5 ,6 , {rounding_zero(item[4,5])} );' + '\n')
+				outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(6 ,6 , {rounding_zero(item[5,5])} );' + '\n')
 				outfile.write('\n')
 
 			else:
@@ -225,36 +226,36 @@ def write_output_avgall(avgmatrix, headcoord, out_name, pileprefix, numberofpile
 		outfile.write('// Note : units are not written, should be consistent with FEM unit ' + '\n')
 		outfile.write('\n')		
 
-		for i in range(1, numberofpile + 1, 1) :
+		for i in range(numberofpile) :
 			for piledata in headcoord :
-				if piledata[1] == pileprefix + str(i):
+				if piledata[1] == pileprefix + str(i + int(ctrlpar[3]) ):
 					xcoord = piledata[2]
 					ycoord = piledata[3]
 					zcoord = piledata[4]
 
-					outfile.write(f'AvgStiffPile_{i+1} = SupportPoint(Point({xcoord}, {ycoord}, {zcoord}));' + '\n' )
-					outfile.write(f'AvgStiffPile_{i+1}.boundary = BoundaryStiffnessMatrix(Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0));' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,1 , {rounding_zero(avgmatrix[0,0])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,2 , {rounding_zero(avgmatrix[0,1])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,3 , {rounding_zero(avgmatrix[0,2])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,4 , {rounding_zero(avgmatrix[0,3])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,5 , {rounding_zero(avgmatrix[0,4])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(1 ,6 , {rounding_zero(avgmatrix[0,5])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,2 , {rounding_zero(avgmatrix[1,1])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,3 , {rounding_zero(avgmatrix[1,2])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,4 , {rounding_zero(avgmatrix[1,3])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,5 , {rounding_zero(avgmatrix[1,4])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(2 ,6 , {rounding_zero(avgmatrix[1,5])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,3 , {rounding_zero(avgmatrix[2,2])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,4 , {rounding_zero(avgmatrix[2,3])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,5 , {rounding_zero(avgmatrix[2,4])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(3 ,6 , {rounding_zero(avgmatrix[2,5])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,4 , {rounding_zero(avgmatrix[3,3])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,5 , {rounding_zero(avgmatrix[3,4])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(4 ,6 , {rounding_zero(avgmatrix[3,5])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(5 ,5 , {rounding_zero(avgmatrix[4,4])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(5 ,6 , {rounding_zero(avgmatrix[4,5])} );' + '\n')
-					outfile.write(f'AvgStiffPile_{i+1}.boundary.setStiffness(6 ,6 , {rounding_zero(avgmatrix[5,5])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) } = SupportPoint(Point({xcoord}, {ycoord}, {zcoord}));' + '\n' )
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary = BoundaryStiffnessMatrix(Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0), Stiffness(0));' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,1 , {rounding_zero(avgmatrix[0,0])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,2 , {rounding_zero(avgmatrix[0,1])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,3 , {rounding_zero(avgmatrix[0,2])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,4 , {rounding_zero(avgmatrix[0,3])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,5 , {rounding_zero(avgmatrix[0,4])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(1 ,6 , {rounding_zero(avgmatrix[0,5])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(2 ,2 , {rounding_zero(avgmatrix[1,1])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(2 ,3 , {rounding_zero(avgmatrix[1,2])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(2 ,4 , {rounding_zero(avgmatrix[1,3])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(2 ,5 , {rounding_zero(avgmatrix[1,4])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(2 ,6 , {rounding_zero(avgmatrix[1,5])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(3 ,3 , {rounding_zero(avgmatrix[2,2])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(3 ,4 , {rounding_zero(avgmatrix[2,3])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(3 ,5 , {rounding_zero(avgmatrix[2,4])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(3 ,6 , {rounding_zero(avgmatrix[2,5])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(4 ,4 , {rounding_zero(avgmatrix[3,3])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(4 ,5 , {rounding_zero(avgmatrix[3,4])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(4 ,6 , {rounding_zero(avgmatrix[3,5])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(5 ,5 , {rounding_zero(avgmatrix[4,4])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(5 ,6 , {rounding_zero(avgmatrix[4,5])} );' + '\n')
+					outfile.write(f'AvgStiffPile_{i + int(ctrlpar[3]) }.boundary.setStiffness(6 ,6 , {rounding_zero(avgmatrix[5,5])} );' + '\n')
 					outfile.write('\n')
 
 
@@ -385,7 +386,7 @@ print(ctrlpar[0])
 
 #Loop over all the files
 combined_matrix = []
-for i in range(1, int(ctrlpar[2]) + 1, 1) :
+for i in range(int(ctrlpar[3]), int(ctrlpar[3]) + int(ctrlpar[2]) , 1) :
 	
 	pile_name = ctrlpar[0] + str(i)
 	stiffnes_file_name = ctrlpar[1][:-4] + "_" + str(i) + ".LIS"
@@ -440,13 +441,14 @@ print('\n')
 ''' CHECK OUTPUT ---------- '''
 
 # Read single file to just extract the pile head coordinates
-single_raw_list = to_list(ctrlpar[1][:-4] + "_" + "1.LIS", False)
+# Use start number of the pile 
+single_raw_list = to_list(ctrlpar[1][:-4] + "_" + ctrlpar[3] + ".LIS", False)
 pilecoord = pile_head_coord(single_raw_list)
 
 #print(*pilecoord, sep='\n')
 
 #Writing output file
-output_filename = ctrlpar[3]
+output_filename = ctrlpar[4]
 if output_filename.strip() == "" :
 	print('Please put the output file name in the control file line 4, no output has been produced')
 else :
